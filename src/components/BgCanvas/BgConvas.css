@@ -1,0 +1,31 @@
+.controls {
+  position: relative;
+}
+
+.controls-text {
+  position: fixed;
+  padding-top: 1rem;
+  z-index: 3;
+  top: 4rem;
+  right: 4rem;
+
+  color: #333;
+  font-weight: bold;
+  width: 10rem;
+  font-size: 1.2rem;
+}
+
+.controls-text::before {
+  content: "^";
+  position: absolute;
+  font-size: 1.5rem;
+  color: tomato;
+  top: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.controls-text span {
+  color: tomato;
+  font-size: 1.2rem;
+}

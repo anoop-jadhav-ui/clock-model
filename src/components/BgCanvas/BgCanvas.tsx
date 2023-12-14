@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import React, { Suspense } from "react";
 import { LoadingCube } from "../Loader3D/LoadingCube";
+import "./BgConvas.css";
 
 const Model = React.lazy(() => import("../Clock/Clock"));
 
@@ -18,7 +19,12 @@ function BgCanvas() {
 
   return (
     <>
-      <Leva collapsed />
+      <div className="controls">
+        <Leva collapsed />
+        <div className="controls-text">
+          You can play around with the <span>Colors</span> here.
+        </div>
+      </div>
       <Canvas
         style={{
           height: "100%",
