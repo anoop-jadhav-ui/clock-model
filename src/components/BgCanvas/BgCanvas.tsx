@@ -22,7 +22,7 @@ function BgCanvas() {
       <div className="controls">
         <Leva collapsed />
         <div className="controls-text">
-          You can play around with the <span>Colors</span> here.
+          You can play with the <span>Colors</span> here
         </div>
       </div>
       <Canvas
