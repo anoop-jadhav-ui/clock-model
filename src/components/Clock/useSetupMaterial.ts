@@ -5,10 +5,10 @@ export const useSetupMaterial = () => {
   const { glassColor, clockShell, clockText, clockFace, clockHand } =
     useControls("Clock", {
       glassColor: "#fff",
-      clockShell: "#f57e7e",
+      clockShell: "#ffaf93",
       clockText: "#fff",
-      clockFace: "#908fd8",
-      clockHand: "#f57e7e",
+      clockFace: "#9897c4",
+      clockHand: "#ffaf93",
     });
 
   const glassMaterial = new THREE.MeshPhysicalMaterial({
