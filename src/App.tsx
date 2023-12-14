@@ -1,9 +1,8 @@
 import "./App.css";
-
-import { Portfolio } from "./components/Portfolio/Portfolio";
+import BgCanvas from "./components/BgCanvas/BgCanvas";
 
 function App() {
-  return <Portfolio />;
+  return <BgCanvas />;
 }
 
 export default App;
