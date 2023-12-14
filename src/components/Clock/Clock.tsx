@@ -4,9 +4,12 @@ Command: npx gltfjsx@6.1.4 --types ./public/clock.glb --transform -s
 */
 
 import { useGLTF } from "@react-three/drei";
-import { useEffect, useState } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useRef, useTransition } from "react";
 import * as THREE from "three";
 import { GLTF } from "three-stdlib";
+import { LoadingCube } from "../Loader3D/LoadingCube";
+import { useCurrentTime } from "./useCurrentTime";
 import { useSetupMaterial } from "./useSetupMaterial";
 
 type GLTFResult = GLTF & {
@@ -28,6 +31,7 @@ type GLTFResult = GLTF & {
 };
 
 function Clock(props: JSX.IntrinsicElements["group"]) {
+  const { hours, minutes, seconds, isLoading } = useCurrentTime();
   const { nodes } = useGLTF("/clock-transformed.glb") as GLTFResult;
   const {
     glassMaterial,
@@ -37,88 +41,96 @@ function Clock(props: JSX.IntrinsicElements["group"]) {
     clockTextMaterial,
   } = useSetupMaterial();
 
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [, startTransition] = useTransition();
 
-  const minuteHandRotation = -THREE.MathUtils.degToRad(minutes * 6);
-  const hourHandRotation = -THREE.MathUtils.degToRad(hours * 30);
-  const secondHandRotation = -THREE.MathUtils.degToRad(seconds * 6);
+  const secondHandRef = useRef<THREE.Mesh>(null);
+  const minuteHandRef = useRef<THREE.Mesh>(null);
+  const hourHandRef = useRef<THREE.Mesh>(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const time = new Date();
-      setHours(time.getHours());
-      setMinutes(time.getMinutes());
-      setSeconds(time.getSeconds());
-    }, 1000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [seconds]);
+  useFrame(() => {
+    startTransition(() => {
+      if (
+        secondHandRef.current &&
+        minuteHandRef.current &&
+        hourHandRef.current
+      ) {
+        secondHandRef.current.rotation.z = -THREE.MathUtils.degToRad(
+          seconds * 6
+        );
+        minuteHandRef.current.rotation.z = -THREE.MathUtils.degToRad(
+          minutes * 6
+        );
+        hourHandRef.current.rotation.z = -THREE.MathUtils.degToRad(hours * 30);
+      }
+    });
+  });
 
   return (
-    <group {...props} dispose={null}>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.glass.geometry}
-        material={glassMaterial}
-        scale={1.88}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.minutesMarker.geometry}
-        material={nodes.minutesMarker.material}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.clockText.geometry}
-        material={clockTextMaterial}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.handHour.geometry}
-        material={clockHandMaterial}
-        rotation={[0, 0, hourHandRotation]}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.handMinute.geometry}
-        material={clockHandMaterial}
-        rotation={[0, 0, minuteHandRotation]}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.handSecond.geometry}
-        material={clockHandMaterial}
-        rotation={[0, 0, secondHandRotation]}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.handPin.geometry}
-        material={clockHandMaterial}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.clockShellMesh.geometry}
-        material={clockFaceMaterial}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.clockShellMesh_1.geometry}
-        material={clockShellMaterial}
-      />
-    </group>
+    <>
+      {isLoading && <LoadingCube />}
+      {!isLoading && (
+        <group {...props} dispose={null}>
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.glass.geometry}
+            material={glassMaterial}
+            scale={1.88}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.minutesMarker.geometry}
+            material={nodes.minutesMarker.material}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.clockText.geometry}
+            material={clockTextMaterial}
+          />
+          <mesh
+            ref={hourHandRef}
+            castShadow
+            receiveShadow
+            geometry={nodes.handHour.geometry}
+            material={clockHandMaterial}
+          />
+          <mesh
+            ref={minuteHandRef}
+            castShadow
+            receiveShadow
+            geometry={nodes.handMinute.geometry}
+            material={clockHandMaterial}
+          />
+          <mesh
+            ref={secondHandRef}
+            castShadow
+            receiveShadow
+            geometry={nodes.handSecond.geometry}
+            material={clockHandMaterial}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.handPin.geometry}
+            material={clockHandMaterial}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.clockShellMesh.geometry}
+            material={clockFaceMaterial}
+          />
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.clockShellMesh_1.geometry}
+            material={clockShellMaterial}
+          />
+        </group>
+      )}
+    </>
   );
 }
 
