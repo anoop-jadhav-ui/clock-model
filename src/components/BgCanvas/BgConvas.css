@@ -19,13 +19,19 @@
 }
 
 .controls-text::before {
-  content: "^";
+  content: "";
+
   position: absolute;
-  font-size: 1.5rem;
-  color: tomato;
-  top: -0.5rem;
+  border-top: 3px solid tomato;
+  border-right: 3px solid tomato;
+
+  width: 0.5rem;
+  height: 0.5rem;
+
+  top: 0;
   left: 50%;
-  transform: translateX(-50%);
+
+  transform: rotate(-45deg) translateX(-50%);
 }
 
 .controls-text span {
