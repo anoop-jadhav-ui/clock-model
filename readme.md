@@ -1,10 +1,10 @@
-# 3D model canvas
+# Clock 3D model
 
 ## Start Script
 
 `npm run dev`
 
-## gltf -> jsx transform
+## Convert gltf -> jsx transform
 
 npx gltfjsx --types ./public/portfolio.glb --transform
 

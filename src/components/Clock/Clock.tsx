@@ -4,9 +4,10 @@ Command: npx gltfjsx@6.1.4 --types ./public/clock.glb --transform -s
 */
 
 import { useGLTF } from "@react-three/drei";
-import { useControls } from "leva";
+import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTF } from "three-stdlib";
+import { useSetupMaterial } from "./useSetupMaterial";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -27,48 +28,35 @@ type GLTFResult = GLTF & {
 };
 
 function Clock(props: JSX.IntrinsicElements["group"]) {
-  const { nodes, materials } = useGLTF("/clock-transformed.glb") as GLTFResult;
+  const { nodes } = useGLTF("/clock-transformed.glb") as GLTFResult;
+  const {
+    glassMaterial,
+    clockShellMaterial,
+    clockHandMaterial,
+    clockFaceMaterial,
+    clockTextMaterial,
+  } = useSetupMaterial();
 
-  const { glassColor, clockShell, clockText, clockFace, clockHand } =
-    useControls("Clock", {
-      glassColor: "#fff",
-      clockShell: "#f57e7e",
-      clockText: "#fff",
-      clockFace: "#908fd8",
-      clockHand: "#f57e7e",
-    });
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
-  const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: glassColor,
-    roughness: 0,
-    transmission: 1,
-    ior: 1.33,
-    clearcoat: 1,
-  });
+  const minuteHandRotation = -THREE.MathUtils.degToRad(minutes * 6);
+  const hourHandRotation = -THREE.MathUtils.degToRad(hours * 30);
+  const secondHandRotation = -THREE.MathUtils.degToRad(seconds * 6);
 
-  const clockShellMaterial = new THREE.MeshPhysicalMaterial({
-    color: clockShell,
-    roughness: 1,
-    clearcoat: 1,
-  });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const time = new Date();
+      setHours(time.getHours());
+      setMinutes(time.getMinutes());
+      setSeconds(time.getSeconds());
+    }, 1000);
 
-  const clockHandMaterial = new THREE.MeshPhysicalMaterial({
-    color: clockHand,
-    roughness: 1,
-    clearcoat: 1,
-  });
-
-  const clockFaceMaterial = new THREE.MeshPhysicalMaterial({
-    color: clockFace,
-    roughness: 1,
-    clearcoat: 1,
-  });
-
-  const clockTextMaterial = new THREE.MeshPhysicalMaterial({
-    color: clockText,
-    roughness: 1,
-    clearcoat: 1,
-  });
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [seconds]);
 
   return (
     <group {...props} dispose={null}>
@@ -96,18 +84,21 @@ function Clock(props: JSX.IntrinsicElements["group"]) {
         receiveShadow
         geometry={nodes.handHour.geometry}
         material={clockHandMaterial}
+        rotation={[0, 0, hourHandRotation]}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.handMinute.geometry}
         material={clockHandMaterial}
+        rotation={[0, 0, minuteHandRotation]}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.handSecond.geometry}
         material={clockHandMaterial}
+        rotation={[0, 0, secondHandRotation]}
       />
       <mesh
         castShadow
