@@ -1,4 +1,3 @@
-import "./App.css";
 import BgCanvas from "./components/BgCanvas/BgCanvas";
 
 function App() {

@@ -2,8 +2,9 @@ import { useControls } from "leva";
 import * as THREE from "three";
 
 export const useSetupMaterial = () => {
-  const { glassColor, clockShell, clockText, clockFace, clockHand } =
+  const { showGlass, glassColor, clockShell, clockText, clockFace, clockHand } =
     useControls("Clock", {
+      showGlass: false,
       glassColor: "#fff",
       clockShell: "#ffaf93",
       clockText: "#fff",
@@ -44,6 +45,7 @@ export const useSetupMaterial = () => {
   });
 
   return {
+    showGlass,
     glassMaterial,
     clockShellMaterial,
     clockHandMaterial,

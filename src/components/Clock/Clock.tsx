@@ -34,6 +34,7 @@ function Clock(props: JSX.IntrinsicElements["group"]) {
   const { hours, minutes, seconds, isLoading } = useCurrentTime();
   const { nodes } = useGLTF("/clock-transformed.glb") as GLTFResult;
   const {
+    showGlass,
     glassMaterial,
     clockShellMaterial,
     clockHandMaterial,
@@ -70,12 +71,14 @@ function Clock(props: JSX.IntrinsicElements["group"]) {
       {isLoading && <LoadingCube />}
       {!isLoading && (
         <group {...props} dispose={null} scale={[1.2, 1.2, 1.2]}>
-          {/* <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.glass.geometry}
-            material={glassMaterial}
-          /> */}
+          {showGlass && (
+            <mesh
+              castShadow
+              receiveShadow
+              geometry={nodes.glass.geometry}
+              material={glassMaterial}
+            />
+          )}
           <mesh
             castShadow
             receiveShadow
