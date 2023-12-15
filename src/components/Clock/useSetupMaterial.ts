@@ -15,7 +15,7 @@ export const useSetupMaterial = () => {
     color: glassColor,
     roughness: 0,
     transmission: 1,
-    ior: 1.1,
+    ior: 1.33,
     clearcoat: 1,
   });
 

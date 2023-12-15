@@ -69,14 +69,13 @@ function Clock(props: JSX.IntrinsicElements["group"]) {
     <>
       {isLoading && <LoadingCube />}
       {!isLoading && (
-        <group {...props} dispose={null}>
-          <mesh
+        <group {...props} dispose={null} scale={[2, 2, 2]}>
+          {/* <mesh
             castShadow
             receiveShadow
             geometry={nodes.glass.geometry}
             material={glassMaterial}
-            scale={1.88}
-          />
+          /> */}
           <mesh
             castShadow
             receiveShadow
